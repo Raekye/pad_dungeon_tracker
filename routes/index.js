@@ -54,12 +54,14 @@ function pad_parse_schedule(html) {
       for (var k = 0; k < 2; k++) {
         // * 2, 3, just because
         try {
+          var url = dungeons_row.eq(j * 3 + k).find("a").attr("href");
           schedule[groups[j]].push({
             "time": pad_format_time(round.eq(j * 2).text()),
-            "link": pad_full_url(dungeons_row.eq(j * 3 + k).find("a").attr("href")),
-            "image": pad_full_url(dungeons_row.eq(j * 3 + k).find("img").attr("data-original").replace("thumbnail", "book"))
+            "link": pad_full_url(url),
+            "image": pad_full_url(dungeons_row.eq(j * 3 + k).find("img").attr("data-original").replace("thumbnail", "book")),
+            "name": db_get_dungeon_name(url, $)
           });
-        } catch (ignore) {}
+        } catch (ignore) { console.log(ignore);}
       }
     }
   }
@@ -78,8 +80,10 @@ function pad_format_time(t) {
   var date = new Date();
   date.setHours(hour_minute[0]);
   date.setMinutes(hour_minute[1]);
+  date.setSeconds(0);
+  date.setMilliseconds(0);
   date.setTimezone("America/Vancouver", true);
-  return date.getTime();
+  return date.getTime() / 1000;
 }
 
 /**
@@ -108,6 +112,22 @@ function pad_parse_time(t) {
     // e.g. time not out yet, will fail to parse
     return null;
   }
+}
+
+function db_log_daily_dungeon(dungeon_id, group, t) {
+  return;
+}
+
+function db_log_special_dungeon(dungeon_id, start_time, end_time) {
+  return;
+}
+
+function db_get_dungeon_name(url, $) {
+  // first search db
+  var dungeon_id = url.split("=")[1];
+  var dungeon_name = $("a[href=\"" + url + "\"]").text().trim();
+  // log
+  return dungeon_name;
 }
 
 module.exports = router;
