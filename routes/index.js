@@ -44,9 +44,11 @@ function pad_parse_schedule(html) {
   var schedule = {};
 
   for (var i = 0; i < dates.length; i++) {
+    schedule[dates[i]] = {};
     for (var j = 0; j < groups.length; j++) {
-     schedule[dates[i]][groups[j]]= [];
-   }
+
+      schedule[dates[i]][groups[j]]= [];
+    }
   }
 
 
