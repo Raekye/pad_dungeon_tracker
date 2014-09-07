@@ -39,29 +39,40 @@ function pad_get_schedule(callback) {
  */
 function pad_parse_schedule(html) {
   var $ = cheerio.load(html);
+  var dates = ['today', 'tomorrow'];
   var groups = ['a', 'b', 'c', 'd', 'e'];
   var schedule = {};
-  for (var i = 0; i < groups.length; i++) {
-    schedule[groups[i]] = [];
-  }
-  rows = $("#metal1a table tr");
-  // 2 just because
-  for (var i = 2; i < rows.length; i += 2) {
-    var round = rows.eq(i).children();
-    var dungeons_row = rows.eq(i - 1).children();
+
+  for (var i = 0; i < dates.length; i++) {
     for (var j = 0; j < groups.length; j++) {
-      // k < 2 worth?
-      for (var k = 0; k < 2; k++) {
-        // * 2, 3, just because
-        try {
-          var url = dungeons_row.eq(j * 3 + k).find("a").attr("href");
-          schedule[groups[j]].push({
-            "time": pad_format_time(round.eq(j * 2).text()),
-            "link": pad_full_url(url),
-            "image": pad_full_url(dungeons_row.eq(j * 3 + k).find("img").attr("data-original").replace("thumbnail", "book")),
-            "name": db_get_dungeon_name(url, $)
-          });
-        } catch (ignore) { console.log(ignore);}
+     schedule[dates[i]][groups[j]]= [];
+   }
+  }
+
+
+  // rows = $("#metal1a table tr");
+  var moreRows = [$("#metal1a table tr"), $("#metal1b table tr")]
+  // 2 just because
+  for (var x = 0; x < dates.length; x++){
+    var rows = moreRows[x];
+    for (var i = 2; i < rows.length; i += 2) {
+      var round = rows.eq(i).children();
+      var dungeons_row = rows.eq(i - 1).children();
+
+      for (var j = 0; j < groups.length; j++) {
+        // k < 2 worth?
+        for (var k = 0; k < 2; k++) {
+          // * 2, 3, just because
+          try {
+            var url = dungeons_row.eq(j * 3 + k).find("a").attr("href");
+            schedule[dates[x]][groups[j]].push({
+              "time": pad_format_time(round.eq(j * 2).text()),
+              "link": pad_full_url(url),
+              "image": pad_full_url(dungeons_row.eq(j * 3 + k).find("img").attr("data-original").replace("thumbnail", "book")),
+              "name": db_get_dungeon_name(url, $)
+            });
+          } catch (ignore) { console.log(ignore);}
+        }
       }
     }
   }
