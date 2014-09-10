@@ -68,7 +68,7 @@ function pad_parse_schedule(html) {
           try {
             var url = dungeons_row.eq(j * 3 + k).find("a").attr("href");
             schedule[dates[x]][groups[j]].push({
-              "time": pad_format_time(round.eq(j * 2).text()),
+              "time": pad_format_time(round.eq(j * 2).text(), x),
               "link": pad_full_url(url),
               "image": pad_full_url(dungeons_row.eq(j * 3 + k).find("img").attr("data-original").replace("thumbnail", "book")),
               "name": db_get_dungeon_name(url, $)
@@ -85,7 +85,7 @@ function pad_full_url(path) {
   return "http://puzzledragonx.com/" + path;
 }
 
-function pad_format_time(t) {
+function pad_format_time(t, day) {
   var hour_minute = pad_parse_time(t);
   if (hour_minute == null) {
     return 0;
@@ -96,7 +96,8 @@ function pad_format_time(t) {
   date.setSeconds(0);
   date.setMilliseconds(0);
   date.setTimezone("America/Vancouver", true);
-  return date.getTime() / 1000;
+  //adds one extra day's worth of seconds if calculating tomorrow's dungeon time
+  return (date.getTime() + (day * 86400)) / 1000;
 }
 
 /**
