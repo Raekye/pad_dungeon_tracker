@@ -97,7 +97,7 @@ function pad_format_time(t, day) {
   date.setMilliseconds(0);
   date.setTimezone("America/Vancouver", true);
   //adds one extra day's worth of seconds if calculating tomorrow's dungeon time
-  return (date.getTime() + (day * 86400)) / 1000;
+  return (date.getTime() + (day * 24 * 60 * 60 * 1000)) / 1000;
 }
 
 /**
